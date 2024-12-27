@@ -1,0 +1,44 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="Theme.Spotube" parent="Theme.Material3.DynamicColors.DayNight">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/big_stone</item>
+        <item name="colorPrimaryVariant">@color/gray_500</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <!-- Customize your theme here. -->
+
+    </style>
+
+    <style name="Widget.App.DefaultTimeBar" parent="">
+        <item name="played_color">?attr/colorPrimary</item>
+        <item name="scrubber_color">?attr/colorPrimary</item>
+        <item name="unplayed_color">@color/gray_500</item>
+        <item name="buffered_color">@color/gray_400</item>
+    </style>
+
+
+    <!--    start common    -->
+    <style name="Widget.App.Button.ElevatedButton" parent="Widget.Material3.Button.ElevatedButton">
+        <item name="android:insetTop">6dp</item>
+        <item name="android:insetBottom">6dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="iconPadding">0dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="iconGravity">textStart</item>
+    </style>
+
+    <style name="Widget.App.Button.IconButton.Filled" parent="Widget.Material3.Button.IconButton.Filled">
+        <item name="iconTint">?attr/colorSurface</item>
+    </style>
+
+    <style name="BottomNavTextSmall">
+        <item name="android:textSize">11sp</item>
+    </style>
+    <!--    end common   -->
+</resources>

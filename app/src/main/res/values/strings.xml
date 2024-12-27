@@ -1,0 +1,144 @@
+<resources>
+    <string name="app_id" translatable="false">CC1AD845</string>
+    <string name="app_name" translatable="false">Spotube</string>
+    <string name="title_home">Home</string>
+    <string name="title_shorts">Shorts</string>
+    <string name="title_explore">Explore</string>
+    <string name="title_library">Library</string>
+    <string name="notification">Notifications</string>
+    <string name="search">Search</string>
+    <string name="account">Account</string>
+    <string name="more">More</string>
+    <string name="content_description_search">Search anything</string>
+    <string name="content_description_account">Your account</string>
+    <string name="content_description_more">View more</string>
+    <string name="play_all">PLay all</string>
+    <string name="replay">Replay</string>
+    <string name="genre">Genre</string>
+    <string name="username" translatable="false">${{username}}</string>
+    <string name="error_conn_server">Unable to connect to server: </string>
+    <string name="error_code">An error occurred, error code: </string>
+    <string name="video_for_you">Music videos for you</string>
+    <string name="albums_for_you">Albums for you</string>
+    <string name="today_hit">Today\'s hit</string>
+    <string name="playlists_for_you">Playlists for you</string>
+    <string name="radios_for_you">Radios for you</string>
+    <string name="quick_picks">Quick picks</string>
+    <string name="no_content">Nothing is playing</string>
+    <string name="an_error_occurred_try_again_later">An error occurred please try again later!</string>
+    <string name="register">Register</string>
+    <string name="go_to_login">Go to login</string>
+    <string name="login">Login</string>
+    <string name="go_to_register">Go to register</string>
+    <string name="video" translatable="false">Video</string>
+    <string name="song">Song</string>
+    <string name="fake_time" translatable="false">00:00</string>
+    <string name="music_next">Up Next</string>
+    <string name="music_lyrics">Lyrics</string>
+    <string name="music_related">Related</string>
+    <string name="err_button_label_restart_stream" translatable="false">err_button_label_restart_stream</string>
+    <string name="err_msg_behind_live_window" translatable="false">err_msg_behind_live_window</string>
+    <string name="err_button_label_ok" translatable="false">err_button_label_ok</string>
+    <string name="err_message_default" translatable="false">err_message_default</string>
+    <string name="views_billion">%s T</string>
+    <string name="views_million">%s Tr</string>
+    <string name="views_thousand">%s N</string>
+    <string name="views">%d</string>
+    <string name="views_desc">view</string>
+    <string name="now_playing">Now playing from</string>
+    <string name="save">Save</string>
+    <string name="share">Share</string>
+    <string name="music_to_get_you_started">MUSIC TO GET YOU STARTED</string>
+    <string name="network_title">No connection</string>
+    <string name="network_message">Looks like you don\'t have an internet connection</string>
+    <string name="network_message_restored">Network connection restored</string>
+    <string name="go_library_download">Go to download video</string>
+    <string name="close">Close</string>
+    <string name="seconds_forward" translatable="false">15s</string>
+    <string name="seconds_backward" translatable="false">5s</string>
+    <string name="speed_x025" translatable="false">0,25x</string>
+    <string name="speed_x05" translatable="false">0,5x</string>
+    <string name="speed_x075" translatable="false">0,75x</string>
+    <string name="speed_default">Normal</string>
+    <string name="speed_x125" translatable="false">1,25x</string>
+    <string name="speed_x15" translatable="false">1,5x</string>
+    <string name="speed_x2" translatable="false">2x</string>
+    <string name="playback_speed">Playback speed</string>
+    <string name="comment_disable">Comments are disabled</string>
+    <string name="play_next_song">Play next song</string>
+    <string name="save_to_playlist">Save to playlist</string>
+    <string name="updating">Updating..</string>
+    <string name="sleep_timer">Hẹn giờ ngủ</string>
+    <string name="report">Report violations</string>
+    <string name="remove_queue_list">Remove queue list</string>
+    <string name="attribution_information">View song credits</string>
+    <string name="go_artist_page">Go to artist page</string>
+    <string name="go_album">Go to album</string>
+    <string name="download">Download</string>
+    <string name="save_to_library">Save to library</string>
+    <string name="add_to_queue_list">Save to queue list</string>
+    <string name="start_playing">Start playing music</string>
+    <string name="play_next_msg">The song that will play next</string>
+    <string name="no_audio">No audio</string>
+    <string name="no_video">No video</string>
+    <string name="most_featured">Most Featured</string>
+    <string name="latest">Latest</string>
+    <string name="comment">Comment</string>
+    <string name="term_cmt">Please remember to be respectful of other users when posting comments and follow our %1$s.</string>
+    <string name="term_title">Community Guidelines</string>
+    <string name="pinned">%1$s pinned</string>
+    <string name="edited">edited</string>
+    <string name="write_cmt">Write a comment…</string>
+    <string name="album">Album</string>
+    <string name="cast" translatable="false">Cast</string>
+    <string name="playlist" translatable="false">Playlist</string>
+    <string name="read_more">… Read more</string>
+    <string name="replies">%d replies</string>
+    <string name="reply">Reply…</string>
+    <string name="reply_title">Reply</string>
+    <string name="copied_to_clipboard">Copied to clipboard!</string>
+    <string name="username_cmt" translatable="false">\@%s</string>
+    <string name="buy_premium_msg">Try 1 month free of Music Premium to listen to music ad-free, offline, and with your screen off.</string>
+    <string name="free_one_month">Free 1 month</string>
+    <string name="no_thanks">No, thanks</string>
+    <string name="you_may_also_like">You may also like</string>
+    <string name="recommended_playlists">Recommended Playlists</string>
+    <string name="similar_artists">Similar Artists</string>
+    <string name="enjoy_more_music_by">ENJOY MORE MUSIC BY</string>
+    <string name="song_info">Song information</string>
+    <string name="about_artist">About the artist</string>
+    <string name="subscriber">subscriber</string>
+    <string name="no_lyrics">No lyrics</string>
+    <string name="no_lyrics_msg">If the song has lyrics, they will appear here when provided.</string>
+    <string name="retry">Retry</string>
+
+
+    <string name="back_to_collapse" translatable="false">Back to collapse</string>
+    <string name="custom_playback_speed" translatable="false">Custom playback speed</string>
+    <string name="more_media_expand" translatable="false">More media expand</string>
+    <string name="like" translatable="false">Like</string>
+    <string name="dislike" translatable="false">Dislike</string>
+    <string name="cmt" translatable="false">Comment</string>
+    <string name="add_to_playlist" translatable="false">Add to playlist</string>
+    <string name="shuffle" translatable="false">Shuffle</string>
+    <string name="previous" translatable="false">Previous</string>
+    <string name="play_pause" translatable="false">Play/Pause</string>
+    <string name="next" translatable="false">Next</string>
+    <string name="repeat" translatable="false">Repeat</string>
+    <string name="tab_layout" translatable="false">Tab Layout</string>
+
+
+    <string name="des_long_second_time">second ago</string>
+    <string name="des_long_minute_time">minute ago</string>
+    <string name="des_long_hour_time">hour ago</string>
+    <string name="des_long_day_time">day ago</string>
+    <string name="des_long_month_time">month ago</string>
+    <string name="des_long_year_time">year ago</string>
+    <string name="des_short_second_time">s ago</string>
+    <string name="des_short_minute_time">m ago</string>
+    <string name="des_short_hour_time">h ago</string>
+    <string name="des_short_day_time">d ago</string>
+    <string name="des_short_month_time">mo ago</string>
+    <string name="des_short_year_time">y ago</string>
+    <string name="lorem_ipsum" translatable="false">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</string>
+</resources>

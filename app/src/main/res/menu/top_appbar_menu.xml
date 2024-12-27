@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/notification"
+        android:contentDescription="@string/content_description_search"
+        android:icon="@drawable/ic_notification_24dp"
+        android:title="@string/notification"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/search"
+        android:contentDescription="@string/content_description_search"
+        android:icon="@drawable/ic_search_24dp"
+        android:title="@string/search"
+        app:showAsAction="ifRoom" />
+
+    <!--    <item-->
+    <!--        android:id="@+id/media_route_menu_item"-->
+    <!--        android:icon="@drawable/ic_cast_24"-->
+    <!--        android:title="@string/cast"-->
+    <!--        app:actionProviderClass="androidx.mediarouter.app.MediaRouteActionProvider"-->
+    <!--        app:showAsAction="ifRoom" />-->
+
+    <item
+        android:id="@+id/account"
+        android:contentDescription="@string/content_description_account"
+        android:icon="@drawable/ic_account_circle_24dp"
+        android:title="@string/account"
+        app:showAsAction="always" />
+
+</menu>
