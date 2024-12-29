@@ -17,8 +17,8 @@ import androidx.media3.session.SessionCommand;
 import androidx.media3.session.SessionCommands;
 import androidx.media3.session.SessionResult;
 
+import com.chagnahnn.spotube.MainActivity;
 import com.chagnahnn.spotube.R;
-import com.chagnahnn.spotube.ui.MainActivity;
 import com.chagnahnn.spotube.util.LogUtils;
 import com.chagnahnn.spotube.util.RandomUtils;
 import com.google.common.util.concurrent.Futures;

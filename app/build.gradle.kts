@@ -36,6 +36,12 @@ android {
 }
 
 dependencies {
+    // room database
+    implementation(libs.room.runtime)
+    annotationProcessor(libs.room.compiler)
+
+    implementation(libs.gson)
+
     // google cast
     implementation(libs.play.services.cast.framework)
     implementation(libs.mediarouter)

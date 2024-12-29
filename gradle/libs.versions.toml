@@ -21,8 +21,13 @@ circleIndicator = "2.1.6"
 palette = "1.0.0"
 playServicesCastFramework = "22.0.0"
 mediarouter = "1.7.0"
+roomVersion = "2.6.1"
+gson = "2.11.0"
 
 [libraries]
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomVersion" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomVersion" }
 mediarouter = { module = "androidx.mediarouter:mediarouter", version.ref = "mediarouter" }
 play-services-cast-framework = { module = "com.google.android.gms:play-services-cast-framework", version.ref = "playServicesCastFramework" }
 palette = { module = "androidx.palette:palette", version.ref = "palette" }

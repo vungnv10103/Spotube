@@ -1,9 +1,9 @@
 package com.chagnahnn.spotube.service.firebase;
 
-public class Common {
+public class FirebaseFactory {
     public static FirebaseAuthFactory mFirebaseAuthFactory;
 
-    public static void initFirebaseService() {
+    public static void initService() {
         if (mFirebaseAuthFactory == null) {
             mFirebaseAuthFactory = new FirebaseAuthFactory();
         }

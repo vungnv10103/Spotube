@@ -1,4 +1,4 @@
-package com.chagnahnn.spotube.ui.viewmodel;
+package com.chagnahnn.spotube.viewmodel;
 
 import androidx.lifecycle.ViewModel;
 

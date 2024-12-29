@@ -154,6 +154,48 @@
         app:surface_type="surface_view"
         app:use_controller="false" />
 
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/artwork"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="34dp"
+        android:alpha="0"
+        android:scaleType="centerCrop"
+        android:src="@drawable/placeholder"
+        app:layout_constraintBottom_toBottomOf="@+id/guideline"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="@+id/player_view_container"
+        app:layout_constraintStart_toStartOf="@+id/player_view_container"
+        app:layout_constraintTop_toBottomOf="@+id/btn_back_to_collapse"
+        app:shapeAppearance="?attr/shapeAppearanceMediumComponent" />
+
+    <FrameLayout
+        android:id="@+id/blur_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="34dp"
+        android:alpha="0"
+        android:background="@color/gray"
+        app:layout_constraintBottom_toBottomOf="@+id/guideline"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="@+id/player_view_container"
+        app:layout_constraintStart_toStartOf="@+id/player_view_container"
+        app:layout_constraintTop_toBottomOf="@+id/btn_back_to_collapse">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_full_screen"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:visibility="gone"
+            app:icon="@drawable/ic_fullscreen_on_24dp"
+            app:iconTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/blur_view"
+            app:layout_constraintEnd_toEndOf="@+id/blur_view" />
+    </FrameLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/content_media_container"
         android:layout_width="0dp"
@@ -202,7 +244,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:background="@android:color/transparent"
         android:clipToPadding="false"
         android:paddingHorizontal="30dp"
         android:scrollbars="none"
@@ -220,6 +261,9 @@
                 android:id="@+id/toggle_like_dislike"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:divider="@drawable/divider_toggle_like_dislike"
+                android:dividerPadding="12dp"
+                android:showDividers="middle"
                 app:singleSelection="true">
 
                 <com.google.android.material.button.MaterialButton
@@ -238,7 +282,7 @@
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/dislike"
                     app:icon="@drawable/toggle_selected_dislike"
-                    app:iconPadding="8dp" />
+                    app:iconPadding="8dp" /><!--8-->
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
             <com.google.android.material.button.MaterialButton
@@ -249,7 +293,7 @@
                 android:layout_marginStart="16dp"
                 android:contentDescription="@string/cmt"
                 app:icon="@drawable/ic_comment_24dp"
-                app:iconPadding="6dp" />
+                app:iconPadding="6dp" /><!--6-->
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_add_to_playlist"
@@ -380,8 +424,87 @@
         app:layout_constraintEnd_toEndOf="@+id/content_media_container"
         app:layout_constraintStart_toStartOf="@+id/content_media_container"
         app:layout_constraintTop_toBottomOf="@+id/btn_play_pause_expand"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_bias="0.7"
         app:tabIndicatorFullWidth="true"
         app:tabMode="fixed" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager_option_music"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tab_option_music"
+        app:layout_constraintStart_toStartOf="@+id/tab_option_music"
+        app:layout_constraintTop_toBottomOf="@+id/tab_option_music" />
+
+    <TextView
+        android:id="@+id/tv_title_media_collapse"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="88dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:alpha="0"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:text="@string/no_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/btn_cast_collapse"
+        app:layout_constraintStart_toStartOf="@+id/player_view_container"
+        app:layout_constraintTop_toTopOf="@+id/player_view_container" />
+
+    <TextView
+        android:id="@+id/tv_artist_media_collapse"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="16dp"
+        android:alpha="0"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/app_name"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/btn_cast_collapse"
+        app:layout_constraintStart_toStartOf="@+id/tv_title_media_collapse"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_media_collapse" />
+
+    <androidx.mediarouter.app.MediaRouteButton
+        android:id="@+id/btn_cast_collapse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:src="@drawable/ic_cast_24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/player_view_container"
+        app:layout_constraintEnd_toStartOf="@+id/btn_play_pause_collapse"
+        app:layout_constraintTop_toTopOf="@+id/player_view_container" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_play_pause_collapse"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:contentDescription="@string/play_pause_collapse"
+        app:icon="@drawable/ic_play_24dp"
+        app:iconSize="28dp"
+        app:layout_constraintBottom_toBottomOf="@+id/player_view_container"
+        app:layout_constraintEnd_toEndOf="@+id/player_view_container"
+        app:layout_constraintTop_toTopOf="@+id/player_view_container" />
+
+    <androidx.media3.ui.DefaultTimeBar
+        android:id="@+id/time_bar_collapse"
+        style="@style/Widget.App.DefaultTimeBar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        app:bar_height="1.5dp"
+        app:layout_constraintBottom_toTopOf="@+id/nav_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

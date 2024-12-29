@@ -123,6 +123,7 @@
     <string name="shuffle" translatable="false">Shuffle</string>
     <string name="previous" translatable="false">Previous</string>
     <string name="play_pause" translatable="false">Play/Pause</string>
+    <string name="play_pause_collapse" translatable="false">Play/Pause</string>
     <string name="next" translatable="false">Next</string>
     <string name="repeat" translatable="false">Repeat</string>
     <string name="tab_layout" translatable="false">Tab Layout</string>

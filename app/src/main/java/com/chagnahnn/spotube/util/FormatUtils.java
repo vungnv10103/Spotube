@@ -28,6 +28,14 @@ public class FormatUtils {
         return Math.round(dp * context.getResources().getDisplayMetrics().density);
     }
 
+    public static int dpToPx(float density, int dps) {
+        return (int) (dps * density + 0.5f);
+    }
+
+    public static int pxToDp(float density, int px) {
+        return (int) (px / density);
+    }
+
     public static String compareTime(Context context, String beginTime, boolean isShortFormat) {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));

@@ -43,15 +43,12 @@ public class PlayBackService extends MediaSessionService {
         callerAwareForwardingPlayer.setSession(mediaSession);
     }
 
-
-    // The user dismissed the app from the recent tasks
     @Override
     public void onTaskRemoved(@Nullable Intent rootIntent) {
         Player player = mediaSession.getPlayer();
         if (!player.getPlayWhenReady()
                 || player.getMediaItemCount() == 0
                 || player.getPlaybackState() == Player.STATE_ENDED) {
-            // Stop the service if not playing, continue playing in the background otherwise.
             stopSelf();
         }
     }

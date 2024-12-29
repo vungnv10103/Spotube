@@ -10,7 +10,7 @@
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <!-- Customize your theme here. -->
-
+        <item name="materialCardViewStyle">@style/Widget.App.CardView</item>
     </style>
 
     <style name="Widget.App.DefaultTimeBar" parent="">
@@ -22,6 +22,19 @@
 
 
     <!--    start common    -->
+
+    <!--    start cardview-->
+    <style name="Widget.App.CardView" parent="Widget.Material3.CardView.Elevated">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.MediumComponent</item>
+    </style>
+
+    <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+        <item name="cardBackgroundColor">@android:color/transparent</item>
+    </style>
+    <!--    end cardview-->
+
     <style name="Widget.App.Button.ElevatedButton" parent="Widget.Material3.Button.ElevatedButton">
         <item name="android:insetTop">6dp</item>
         <item name="android:insetBottom">6dp</item>
@@ -41,4 +54,13 @@
         <item name="android:textSize">11sp</item>
     </style>
     <!--    end common   -->
+
+    <style name="word_title">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:background">@android:color/holo_orange_light</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Large</item>
+    </style>
+
 </resources>
