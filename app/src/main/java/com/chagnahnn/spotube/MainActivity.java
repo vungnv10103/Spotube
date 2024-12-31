@@ -1,5 +1,6 @@
 package com.chagnahnn.spotube;
 
+import android.annotation.SuppressLint;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -7,10 +8,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,8 @@ import androidx.media3.common.Timeline;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.datasource.HttpDataSource;
 import androidx.media3.session.MediaController;
+import androidx.media3.ui.AspectRatioFrameLayout;
+import androidx.media3.ui.PlayerView;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -70,56 +73,120 @@ public class MainActivity extends SpotubeAppCompatActivity {
         loadData();
     }
 
+    private void resetBlurViewTimeout() {
+        if (isBlurViewVisible && hideBlurViewRunnable != null) {
+            handlerBlurView.removeCallbacks(hideBlurViewRunnable);
+            handlerBlurView.postDelayed(hideBlurViewRunnable, 3000);
+        }
+    }
+
+    private void setupButtonBlurListeners() {
+        binding.btnShareMediaFullscreen.setOnClickListener(v -> resetBlurViewTimeout());
+        binding.btnMoreMediaFullscreen.setOnClickListener(v -> resetBlurViewTimeout());
+        binding.btnPreviousBlur.setOnClickListener(v -> {
+            resetBlurViewTimeout();
+            handlePrevious();
+        });
+        binding.btnReplay5Blur.setOnClickListener(v -> {
+            resetBlurViewTimeout();
+            handleSeekTo(-5);
+        });
+        binding.btnPlayPauseBlur.setOnClickListener(v -> {
+            resetBlurViewTimeout();
+            handlePLayPause();
+        });
+        binding.btnForward10Blur.setOnClickListener(v -> {
+            resetBlurViewTimeout();
+            handleSeekTo(10);
+        });
+        binding.btnNextBlur.setOnClickListener(v -> {
+            resetBlurViewTimeout();
+            handleNext();
+        });
+    }
+
+    private void toggleShowHideBlurItem(boolean isShow) {
+        binding.btnHideFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        binding.btnShareMediaFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        binding.btnCastFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        binding.btnMoreMediaFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        binding.btnPlayPauseBlur.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        binding.btnReplay5Blur.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        binding.btnForward10Blur.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        binding.btnPreviousBlur.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        binding.btnNextBlur.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        binding.tvTimeStartFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        binding.timeBarFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        binding.tvTimeEndFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        binding.btnFullScreen.setVisibility(View.GONE);
+    }
+
+    private void hiddenBlurItem() {
+        AlphaAnimation fadeOut = new AlphaAnimation(1.0f, 0.0f);
+        fadeOut.setDuration(500);
+        binding.blurView.startAnimation(fadeOut);
+        binding.blurView.setAlpha(0f);
+        toggleShowHideBlurItem(false);
+        isBlurViewVisible = false;
+    }
+
     private void toggleBlurView() {
+        boolean isFullscreen = isFullscreen();
         if (isBlurViewVisible) {
             if (hideBlurViewRunnable != null) {
                 handlerBlurView.removeCallbacks(hideBlurViewRunnable);
             }
-            AlphaAnimation fadeOut = new AlphaAnimation(1.0f, 0.0f);
-            fadeOut.setDuration(500);
-            binding.blurView.startAnimation(fadeOut);
-            binding.blurView.setAlpha(0f);
-            binding.btnFullScreen.setVisibility(View.GONE);
-            isBlurViewVisible = false;
+            hiddenBlurItem();
         } else {
             binding.blurView.setAlpha(1f);
+            if (isFullscreen) {
+                toggleShowHideBlurItem(true);
+            }
             binding.btnFullScreen.setVisibility(View.VISIBLE);
             AlphaAnimation fadeIn = new AlphaAnimation(0.0f, 1.0f);
             fadeIn.setDuration(500);
             binding.blurView.startAnimation(fadeIn);
-            hideBlurViewRunnable = () -> {
-                AlphaAnimation fadeOut = new AlphaAnimation(1.0f, 0.0f);
-                fadeOut.setDuration(500);
-                binding.blurView.startAnimation(fadeOut);
-                binding.blurView.setAlpha(0f);
-                binding.btnFullScreen.setVisibility(View.GONE);
-                isBlurViewVisible = false;
-            };
-            handlerBlurView.postDelayed(hideBlurViewRunnable, 3000);
+            hideBlurViewRunnable = this::hiddenBlurItem;
+            handlerBlurView.postDelayed(hideBlurViewRunnable, DURATION_MOTION_BLUR);
             isBlurViewVisible = true;
         }
     }
 
-    private void initClick() {
+    @SuppressLint("ClickableViewAccessibility")
+    private void initClick(MediaController mediaController) {
+        setupButtonBlurListeners();
         binding.btnBackToCollapse.setOnClickListener(view -> transitionToCollapse());
-        binding.btnPlaybackSpeed.setOnClickListener(view -> toggleBlurView());
+        binding.btnPlaybackSpeed.setOnClickListener(view -> {
+
+        });
         binding.btnMoreMediaExpand.setOnClickListener(view -> {
 
         });
         binding.btnPlayPauseCollapse.setOnClickListener(view -> handlePLayPause());
         binding.btnPlayPauseExpand.setOnClickListener(view -> handlePLayPause());
         binding.btnLike.setOnClickListener(view -> {
-            View divider = new View(this);
-            divider.setBackgroundColor(Color.BLACK);
-            LinearLayout.LayoutParams dividerParams = new LinearLayout.LayoutParams(
-                    2,
-                    LinearLayout.LayoutParams.MATCH_PARENT
-            );
-            divider.setLayoutParams(dividerParams);
-
-            binding.getRoot().addView(divider, 1);
         });
-//        binding.btnDislike.setOnClickListener(view -> logViewDimensions(binding.btnDislike));
+        binding.btnDislike.setOnClickListener(view -> {
+        });
+        binding.btnShuffle.setOnClickListener(v -> handleShuffle());
+        binding.btnPrevious.setOnClickListener(v -> handlePrevious());
+        binding.btnNext.setOnClickListener(v -> handleNext());
+        binding.btnRepeat.setOnClickListener(v -> handleRepeat());
+
+        GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapConfirmed(@NonNull MotionEvent e) {
+                toggleBlurView();
+                return true;
+            }
+        });
+
+        binding.playerView.setOnTouchListener((v, event) -> {
+            if (gestureDetector.onTouchEvent(event)) {
+                return true;
+            }
+            return binding.container.onTouchEvent(event);
+        });
 
         binding.btnFullScreen.setOnClickListener(view -> transitionToFullscreen());
     }
@@ -153,6 +220,12 @@ public class MainActivity extends SpotubeAppCompatActivity {
                 binding.timeBarCollapse.setPosition(longs[0]);
                 binding.timeBarCollapse.setDuration(longs[1]);
                 binding.timeBarCollapse.setBufferedPosition(longs[2]);
+
+                binding.timeBarFullscreen.setPosition(longs[0]);
+                binding.timeBarFullscreen.setDuration(longs[1]);
+                binding.timeBarFullscreen.setBufferedPosition(longs[2]);
+                binding.tvTimeStartFullscreen.setText(FormatUtils.getTimeString(Math.round((float) longs[0] / 1000)));
+                binding.tvTimeEndFullscreen.setText(FormatUtils.getTimeString(Math.round((float) longs[1] / 1000)));
             }
         });
     }
@@ -174,38 +247,29 @@ public class MainActivity extends SpotubeAppCompatActivity {
         binding.timeBarCollapse.setScrubberColor(Color.TRANSPARENT);
         binding.timeBarCollapse.addListener(timeBar);
         binding.timeBarExpand.addListener(timeBar);
+        binding.timeBarFullscreen.addListener(timeBar);
 
         binding.tvTitleMediaCollapse.setSelected(true);
         binding.tvTitleMediaExpand.setSelected(true);
-        initClick();
+        initClick(mediaController);
 
         binding.btnLike.setText("11,7 N");
         binding.btnDislike.setText("999");
         binding.btnCmt.setText("125");
     }
 
-    private void logViewDimensions(View view) {
-        if (view != null) {
-            view.post(() -> {
-                int width = view.getWidth();
-                int height = view.getHeight();
-                Log.d("ViewDimensions", "Width: " + width + ", Height: " + height);
-            });
-        } else {
-            Log.e("ViewDimensions", "View is null");
-        }
-    }
-
     private void updatePlayPauseButton() {
         boolean shouldShowPlayButton = shouldShowPlayButton();
         binding.btnPlayPauseCollapse.setIconResource(shouldShowPlayButton ? R.drawable.ic_play_24dp : R.drawable.ic_pause_24dp);
         binding.btnPlayPauseExpand.setIconResource(shouldShowPlayButton ? R.drawable.ic_play_24dp : R.drawable.ic_pause_24dp);
+        binding.btnPlayPauseBlur.setIconResource(shouldShowPlayButton ? R.drawable.ic_play_24dp : R.drawable.ic_pause_24dp);
     }
 
     private void setColorScheme(int colorDefault, int color) {
         if (colorDefault != color) {
             ConstraintSet constraintSet = binding.container.getConstraintSet(R.id.expand);
             startAnimationColor(constraintSet, colorDefault, color);
+//            startColor(constraintSet, color);
             int colorOption = getBackgroundColorOption();
             binding.btnLike.setBackgroundColor(colorOption);
             binding.btnDislike.setBackgroundColor(colorOption);
@@ -529,8 +593,10 @@ public class MainActivity extends SpotubeAppCompatActivity {
                 }
             }
 
+            @OptIn(markerClass = UnstableApi.class)
             @Override
             public void onTransitionCompleted(MotionLayout motionLayout, int currentId) {
+                hiddenBlurItem();
                 if (currentId == R.id.expand) {
                     setRadiusPlayerView(32);
                     binding.tabOptionMusic.setSelectedTabIndicator(null);
@@ -541,11 +607,28 @@ public class MainActivity extends SpotubeAppCompatActivity {
                     setRadiusPlayerView(16);
                     binding.tabOptionMusic.setSelectedTabIndicator(getDrawableDefaultTabLayout());
                 }
+
+                if (currentId == R.id.fullscreen) {
+                    setRadiusPlayerView(0);
+                    hideSystemUI();
+                    binding.playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+                    binding.playerView.setArtworkDisplayMode(PlayerView.ARTWORK_DISPLAY_MODE_FILL);
+//                    binding.playerView.setUseController(true);
+                    binding.btnFullScreen.setIcon(getDrawable(MainActivity.this, R.drawable.ic_fullscreen_exit_24dp));
+                } else {
+                    showSystemUI();
+                    binding.playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+                    binding.playerView.setArtworkDisplayMode(PlayerView.ARTWORK_DISPLAY_MODE_FIT);
+//                    binding.playerView.setUseController(false);
+                    binding.btnFullScreen.setIcon(getDrawable(MainActivity.this, R.drawable.ic_fullscreen_on_24dp));
+                }
             }
 
             @Override
             public void onTransitionTrigger(MotionLayout motionLayout, int triggerId, boolean positive, float progress) {
-
+                logD(triggerId + ":" + positive + ":" + progress);
+                System.out.println(motionLayout.toString());
+                showSnackBar(triggerId + ":" + positive + ":" + progress + "\n" + motionLayout);
             }
         });
     }
@@ -570,6 +653,10 @@ public class MainActivity extends SpotubeAppCompatActivity {
 
     private boolean isExpandTopComment() {
         return binding.container.getCurrentState() == R.id.expand_top_comment;
+    }
+
+    private boolean isFullscreen() {
+        return binding.container.getCurrentState() == R.id.fullscreen;
     }
 
     public void transitionToExpandTop(int... delay) {
@@ -673,7 +760,6 @@ public class MainActivity extends SpotubeAppCompatActivity {
 
     private void handleFullScreen(boolean isFullscreen) {
         if (isFullscreen) {
-//            hideSystemUI();
             setFullscreenButtonState(true);
             transitionToFullscreen();
         } else {

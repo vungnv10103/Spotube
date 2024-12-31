@@ -149,8 +149,8 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_back_to_collapse"
         app:repeat_toggle_modes="one|all|none"
         app:show_buffering="when_playing"
-        app:show_subtitle_button="true"
-        app:show_vr_button="true"
+        app:show_subtitle_button="false"
+        app:show_vr_button="false"
         app:surface_type="surface_view"
         app:use_controller="false" />
 
@@ -170,7 +170,7 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_back_to_collapse"
         app:shapeAppearance="?attr/shapeAppearanceMediumComponent" />
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/blur_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -184,23 +184,196 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_back_to_collapse">
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_hide_fullscreen"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:visibility="gone"
+            app:icon="@drawable/ic_keyboard_arrow_down_24dp"
+            app:iconSize="24dp"
+            app:iconTint="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:rippleColor="?attr/colorControlNormal" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_share_media_fullscreen"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:visibility="gone"
+            app:icon="@drawable/ic_share_24dp"
+            app:iconSize="24dp"
+            app:iconTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_more_media_fullscreen"
+            app:layout_constraintEnd_toStartOf="@+id/btn_cast_fullscreen"
+            app:layout_constraintTop_toTopOf="@+id/btn_more_media_fullscreen"
+            app:rippleColor="?attr/colorControlNormal" />
+
+        <androidx.mediarouter.app.MediaRouteButton
+            android:id="@+id/btn_cast_fullscreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_cast_24dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_more_media_fullscreen"
+            app:layout_constraintEnd_toStartOf="@+id/btn_more_media_fullscreen"
+            app:layout_constraintTop_toTopOf="@+id/btn_more_media_fullscreen"
+            app:mediaRouteButtonTint="@color/white" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_more_media_fullscreen"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:visibility="gone"
+            app:icon="@drawable/ic_more_ver_24dp"
+            app:iconSize="24dp"
+            app:iconTint="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:rippleColor="?attr/colorControlNormal" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_previous_blur"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone"
+            app:icon="@drawable/ic_skip_previous_24dp"
+            app:iconSize="32dp"
+            app:iconTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause_blur"
+            app:layout_constraintEnd_toStartOf="@+id/btn_replay_5_blur"
+            app:layout_constraintTop_toTopOf="@+id/btn_play_pause_blur"
+            app:rippleColor="?attr/colorControlNormal" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_replay_5_blur"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone"
+            app:icon="@drawable/ic_replay_5_24dp"
+            app:iconSize="32dp"
+            app:iconTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause_blur"
+            app:layout_constraintEnd_toStartOf="@+id/btn_play_pause_blur"
+            app:layout_constraintTop_toTopOf="@+id/btn_play_pause_blur"
+            app:rippleColor="?attr/colorControlNormal" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_play_pause_blur"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="?attr/colorOnPrimary"
+            android:visibility="gone"
+            app:icon="@drawable/ic_play_24dp"
+            app:iconSize="32dp"
+            app:iconTint="?attr/colorOnSecondary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:rippleColor="?attr/colorControlNormal" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_forward_10_blur"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:visibility="gone"
+            app:icon="@drawable/ic_forward_10_24dp"
+            app:iconSize="32dp"
+            app:iconTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause_blur"
+            app:layout_constraintStart_toEndOf="@+id/btn_play_pause_blur"
+            app:layout_constraintTop_toTopOf="@+id/btn_play_pause_blur"
+            app:rippleColor="?attr/colorControlNormal" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_next_blur"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:visibility="gone"
+            app:icon="@drawable/ic_skip_next_24dp"
+            app:iconSize="32dp"
+            app:iconTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause_blur"
+            app:layout_constraintStart_toEndOf="@+id/btn_forward_10_blur"
+            app:layout_constraintTop_toTopOf="@+id/btn_play_pause_blur"
+            app:rippleColor="?attr/colorControlNormal" />
+
+        <TextView
+            android:id="@+id/tv_time_start_fullscreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="4dp"
+            android:text="@string/fake_time"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_time_end_fullscreen"
+            app:layout_constraintEnd_toStartOf="@+id/time_bar_fullscreen"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_time_end_fullscreen" />
+
+        <androidx.media3.ui.DefaultTimeBar
+            android:id="@+id/time_bar_fullscreen"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:bar_height="2dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_time_end_fullscreen"
+            app:layout_constraintEnd_toStartOf="@+id/tv_time_end_fullscreen"
+            app:layout_constraintStart_toEndOf="@+id/tv_time_start_fullscreen"
+            app:layout_constraintTop_toTopOf="@+id/tv_time_end_fullscreen" />
+
+        <TextView
+            android:id="@+id/tv_time_end_fullscreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:text="@string/fake_time"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_full_screen"
+            app:layout_constraintEnd_toStartOf="@+id/btn_full_screen"
+            app:layout_constraintStart_toEndOf="@+id/time_bar_fullscreen"
+            app:layout_constraintTop_toTopOf="@+id/btn_full_screen" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_full_screen"
             style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
             android:visibility="gone"
             app:icon="@drawable/ic_fullscreen_on_24dp"
             app:iconTint="@color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/blur_view"
-            app:layout_constraintEnd_toEndOf="@+id/blur_view" />
-    </FrameLayout>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:rippleColor="?attr/colorControlNormal" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/content_media_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/nav_view"
+        app:layout_constraintBottom_toTopOf="@+id/tab_layout_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/player_view" />
@@ -415,28 +588,48 @@
         app:layout_constraintEnd_toEndOf="@+id/content_media_container"
         app:layout_constraintTop_toTopOf="@+id/btn_play_pause_expand" />
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_option_music"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/tab_layout_container"
+        style="@style/Widget.App.CardView.TabLayout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/tab_layout"
+        android:layout_height="0dp"
+        android:layout_marginTop="2dp"
+        app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/content_media_container"
         app:layout_constraintStart_toStartOf="@+id/content_media_container"
-        app:layout_constraintTop_toBottomOf="@+id/btn_play_pause_expand"
-        app:layout_constraintVertical_bias="0.7"
-        app:tabIndicatorFullWidth="true"
-        app:tabMode="fixed" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_play_pause_expand">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_pager_option_music"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:alpha="1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/tab_option_music"
-        app:layout_constraintStart_toStartOf="@+id/tab_option_music"
-        app:layout_constraintTop_toBottomOf="@+id/tab_option_music" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="12dp">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_option_music"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/tab_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tabIndicatorFullWidth="true"
+                app:tabMode="fixed"
+                app:tabUnboundedRipple="false" />
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/view_pager_option_music"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/tab_option_music"
+                app:layout_constraintStart_toStartOf="@+id/tab_option_music"
+                app:layout_constraintTop_toBottomOf="@+id/tab_option_music" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/tv_title_media_collapse"
