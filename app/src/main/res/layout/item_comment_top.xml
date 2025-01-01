@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tv_term"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:background="?attr/colorSurfaceContainerHighest"
+    android:lineSpacingExtra="2.5dp"
+    android:padding="12dp"
+    android:text="@string/term_cmt"
+    android:textSize="12sp" />

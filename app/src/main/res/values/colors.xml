@@ -3,9 +3,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#80000000</color>
-    <color name="blue">#0C43CF</color>
-    <color name="blue_200">#2D60DF</color>
-    <color name="blue_100">#7B98E2</color>
+
+
+    <color name="mine_shaft">#212121</color>
     <color name="gray_400">#9ca3af</color>
     <color name="gray_500">#747474</color>
     <color name="big_stone">#192e47</color>

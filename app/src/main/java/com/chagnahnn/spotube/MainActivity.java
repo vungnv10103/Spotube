@@ -1,17 +1,19 @@
 package com.chagnahnn.spotube;
 
-import android.annotation.SuppressLint;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
+import android.text.Editable;
 import android.text.TextUtils;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
+import android.text.TextWatcher;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
@@ -39,6 +41,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.chagnahnn.spotube.core.MyMediaItem;
 import com.chagnahnn.spotube.core.SpotubeAppCompatActivity;
 import com.chagnahnn.spotube.databinding.ActivityMainBinding;
+import com.chagnahnn.spotube.ui.adapter.CommentAdapter;
 import com.chagnahnn.spotube.ui.adapter.TabLayoutAdapter;
 import com.chagnahnn.spotube.ui.model.Comment;
 import com.chagnahnn.spotube.ui.model.Lyric;
@@ -63,10 +66,6 @@ public class MainActivity extends SpotubeAppCompatActivity {
     private boolean mediaItemChanged = false;
     private boolean firstLoad = true;
 
-    private Handler handlerBlurView;
-    private Runnable hideBlurViewRunnable;
-    private boolean isBlurViewVisible = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,88 +79,11 @@ public class MainActivity extends SpotubeAppCompatActivity {
         loadData();
     }
 
-    private void resetBlurViewTimeout() {
-        if (isBlurViewVisible && hideBlurViewRunnable != null) {
-            handlerBlurView.removeCallbacks(hideBlurViewRunnable);
-            handlerBlurView.postDelayed(hideBlurViewRunnable, 3000);
-        }
-    }
 
-    private void setupButtonBlurListeners() {
-        binding.btnShareMediaFullscreen.setOnClickListener(v -> resetBlurViewTimeout());
-        binding.btnMoreMediaFullscreen.setOnClickListener(v -> resetBlurViewTimeout());
-        binding.btnPreviousBlur.setOnClickListener(v -> {
-            resetBlurViewTimeout();
-            handlePrevious();
-        });
-        binding.btnShuffleFullscreen.setOnClickListener(v -> {
-            resetBlurViewTimeout();
-            handleShuffle();
-        });
-        binding.btnPlayPauseBlur.setOnClickListener(v -> {
-            resetBlurViewTimeout();
-            handlePLayPause();
-        });
-        binding.btnRepeatFullscreen.setOnClickListener(v -> {
-            resetBlurViewTimeout();
-            handleRepeat();
-        });
-        binding.btnNextBlur.setOnClickListener(v -> {
-            resetBlurViewTimeout();
-            handleNext();
-        });
-    }
+    private CommentAdapter commentAdapter;
 
-    private void toggleShowHideBlurItem(boolean isShow) {
-        binding.btnHideFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        binding.btnShareMediaFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        binding.btnCastFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        binding.btnMoreMediaFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        binding.btnPlayPauseBlur.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        binding.btnShuffleFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        binding.btnRepeatFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        binding.btnPreviousBlur.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        binding.btnNextBlur.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        binding.tvTimeStartFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        binding.timeBarFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        binding.tvTimeEndFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        binding.btnFullScreen.setVisibility(View.GONE);
-    }
-
-    private void hiddenBlurItem() {
-        AlphaAnimation fadeOut = new AlphaAnimation(1.0f, 0.0f);
-        fadeOut.setDuration(500);
-        binding.blurView.startAnimation(fadeOut);
-        binding.blurView.setAlpha(0f);
-        toggleShowHideBlurItem(false);
-        isBlurViewVisible = false;
-    }
-
-    private void toggleBlurView() {
-        boolean isFullscreen = isFullscreen();
-        if (isBlurViewVisible) {
-            if (hideBlurViewRunnable != null) {
-                handlerBlurView.removeCallbacks(hideBlurViewRunnable);
-            }
-            hiddenBlurItem();
-        } else {
-            binding.blurView.setAlpha(1f);
-            if (isFullscreen) {
-                toggleShowHideBlurItem(true);
-            }
-            binding.btnFullScreen.setVisibility(View.VISIBLE);
-            AlphaAnimation fadeIn = new AlphaAnimation(0.0f, 1.0f);
-            fadeIn.setDuration(500);
-            binding.blurView.startAnimation(fadeIn);
-            hideBlurViewRunnable = this::hiddenBlurItem;
-            handlerBlurView.postDelayed(hideBlurViewRunnable, DURATION_MOTION_BLUR);
-            isBlurViewVisible = true;
-        }
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
     private void initClick(MediaController mediaController) {
-        setupButtonBlurListeners();
+//        setupButtonBlurListeners();
         binding.btnBackToCollapse.setOnClickListener(view -> transitionToCollapse());
         binding.btnPlaybackSpeed.setOnClickListener(view -> {
 
@@ -180,35 +102,152 @@ public class MainActivity extends SpotubeAppCompatActivity {
         binding.btnNext.setOnClickListener(v -> handleNext());
         binding.btnRepeat.setOnClickListener(v -> handleRepeat());
 
-        GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapConfirmed(@NonNull MotionEvent e) {
-                toggleBlurView();
-                return true;
-            }
-
-            @Override
-            public boolean onDoubleTap(@NonNull MotionEvent e) {
-                float tapX = e.getX();
-                int viewWidth = binding.playerView.getWidth();
-                if (tapX < (float) viewWidth / 2) {
-                    handleSeekTo(-10);
-                } else {
-                    handleSeekTo(10);
-                }
-                return true;
-            }
-        });
-
-        binding.playerView.setOnTouchListener((v, event) -> {
-            if (gestureDetector.onTouchEvent(event)) {
-                return true;
-            }
-            return binding.container.onTouchEvent(event);
-        });
-
+//        initTouchPlayerView();
         binding.btnFullScreen.setOnClickListener(view -> transitionToFullscreen());
+
+
+        String textTemplate = getString(R.string.term_cmt);
+        String wordToStyle = getString(R.string.term_title);
+        String fullText = String.format(textTemplate, wordToStyle);
+
+        commentAdapter = new CommentAdapter(this, getSpannableString(fullText, wordToStyle));
+        disableOverscroll(binding.rcvComment);
+        binding.rcvComment.setAdapter(commentAdapter);
+
+        binding.btnBackToMainCmt.setOnClickListener(view -> hideReplyCmt());
+        binding.btnCloseCmt.setOnClickListener(view -> transitionToExpand());
+        binding.inputCmtContainer.edtCmt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int count, int after) {
+                if (charSequence.length() > 0) {
+                    binding.inputCmtContainer.btnSendCmt.setVisibility(View.VISIBLE);
+                    ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) binding.inputCmtContainer.edtCmt.getLayoutParams();
+                    layoutParams.setMarginEnd(0);
+                    binding.inputCmtContainer.edtCmt.setLayoutParams(layoutParams);
+                } else {
+                    binding.inputCmtContainer.btnSendCmt.setVisibility(View.GONE);
+                    ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) binding.inputCmtContainer.edtCmt.getLayoutParams();
+                    layoutParams.setMarginEnd(FormatUtils.dp2Px(MainActivity.this, 12));
+                    binding.inputCmtContainer.edtCmt.setLayoutParams(layoutParams);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        binding.inputReplyCmtContainer.edtCmt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int count, int after) {
+                if (charSequence.length() > 0) {
+                    binding.inputReplyCmtContainer.btnSendCmt.setVisibility(View.VISIBLE);
+                    ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) binding.inputReplyCmtContainer.edtCmt.getLayoutParams();
+                    layoutParams.setMarginEnd(0);
+                    binding.inputReplyCmtContainer.edtCmt.setLayoutParams(layoutParams);
+                } else {
+                    binding.inputReplyCmtContainer.btnSendCmt.setVisibility(View.GONE);
+                    ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) binding.inputReplyCmtContainer.edtCmt.getLayoutParams();
+                    layoutParams.setMarginEnd(FormatUtils.dp2Px(MainActivity.this, 12));
+                    binding.inputReplyCmtContainer.edtCmt.setLayoutParams(layoutParams);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        binding.inputCmtContainer.btnSendCmt.setOnClickListener(view -> showToast(binding.inputCmtContainer.edtCmt.getText().toString().trim()));
+        binding.inputReplyCmtContainer.btnSendCmt.setOnClickListener(view -> showToast("Replay:: " + binding.inputReplyCmtContainer.edtCmt.getText().toString().trim()));
     }
+
+    public void showReplyCmt(boolean isFocusEditText) {
+        binding.btnBackToMainCmt.setVisibility(View.VISIBLE);
+        binding.tvHeaderCmt.setText(getString(R.string.reply_title));
+        animateLayout(binding.mainCommentContainer, binding.replyCommentContainer, "left", 350);
+        if (isFocusEditText) {
+            binding.inputReplyCmtContainer.edtCmt.requestFocus();
+            binding.inputReplyCmtContainer.edtCmt.post(() -> {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.showSoftInput(binding.inputReplyCmtContainer.edtCmt, InputMethodManager.SHOW_IMPLICIT);
+                }
+            });
+        }
+    }
+
+    private void hideReplyCmt() {
+        binding.btnBackToMainCmt.setVisibility(View.GONE);
+        binding.tvHeaderCmt.setText(getString(R.string.comment));
+        animateLayout(binding.replyCommentContainer, binding.mainCommentContainer, "right", 350);
+        closeKeyboard();
+    }
+
+    private void closeKeyboard() {
+        if (isKeyboardVisible(binding.getRoot())) {
+            closeKeyBoard(this);
+        }
+    }
+
+
+    /**
+     * Animates the transition between two layouts with a sliding effect.
+     *
+     * @param layoutToHide   The layout currently visible that will be hidden.
+     * @param layoutToShow   The layout currently hidden that will be shown.
+     * @param slideDirection The direction of the slide animation. Can be "left" or "right".
+     * @param duration       The duration of the animation in milliseconds.
+     */
+    @SuppressWarnings("SameParameterValue")
+    private void animateLayout(@NonNull View layoutToHide, View layoutToShow,
+                               @NonNull String slideDirection, long duration) {
+        int width = layoutToHide.getWidth();
+
+        // Determine animation direction
+        float hideStartX = 0;
+        float hideEndX = slideDirection.equals("left") ? -width : width;
+
+        float showStartX = slideDirection.equals("left") ? width : -width;
+        float showEndX = 0;
+
+        // Slide out animation for the layout to hide
+        ObjectAnimator slideOut = ObjectAnimator.ofFloat(layoutToHide, "translationX", hideStartX, hideEndX);
+        slideOut.setDuration(duration);
+
+        // Slide in animation for the layout to show
+        ObjectAnimator slideIn = ObjectAnimator.ofFloat(layoutToShow, "translationX", showStartX, showEndX);
+        slideIn.setDuration(duration);
+
+        // AnimatorSet to play animations together
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(slideOut, slideIn);
+
+        animatorSet.addListener(new android.animation.AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(android.animation.Animator animation) {
+                layoutToShow.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(android.animation.Animator animation) {
+                layoutToHide.setVisibility(View.GONE);
+            }
+        });
+
+        animatorSet.start();
+    }
+
 
     private void initMediaController() {
         mainViewModel.initMediaController(this, playerListener);
@@ -259,7 +298,7 @@ public class MainActivity extends SpotubeAppCompatActivity {
 
     @OptIn(markerClass = UnstableApi.class)
     private void initView(MediaController mediaController) {
-        handlerBlurView = new Handler();
+//        handlerBlurView = new Handler();
         initNavController();
         initMotionLayout();
         initTabOptionMusic();
@@ -387,7 +426,16 @@ public class MainActivity extends SpotubeAppCompatActivity {
         }
     }
 
+    private void clearEdtCmt() {
+        binding.inputCmtContainer.edtCmt.setText("");
+        binding.inputReplyCmtContainer.edtCmt.setText("");
+    }
+
     private void handleMediaItemTransition(MediaItem currentMediaItem) {
+        clearEdtCmt();
+        if (isExpandTopComment()) {
+            transitionToExpand();
+        }
         if (currentMediaItem == null) return;
         set(currentMediaItem);
         Bundle musicBundle = currentMediaItem.mediaMetadata.extras;
@@ -396,6 +444,7 @@ public class MainActivity extends SpotubeAppCompatActivity {
         boolean enableShowComment = musicBundle.getBoolean("enableShowComment");
         if (enableShowComment) {
             List<Comment> commentList = filterComment(currentMediaItem.mediaId);
+            commentAdapter.setItemList(commentList);
             if (commentList.isEmpty()) {
                 binding.btnCmt.setIconPadding(0);
                 binding.btnCmt.setText("");
@@ -406,13 +455,7 @@ public class MainActivity extends SpotubeAppCompatActivity {
             ColorStateList colorPrimary = ColorStateList.valueOf(ThemeUtils.getColorPrimary(this));
             binding.btnCmt.setIconTint(colorPrimary);
             binding.btnCmt.setTextColor(colorPrimary);
-            binding.btnCmt.setOnClickListener(view -> {
-                showSnackBar("OPEN CMT");
-                if (binding.btnCmt.getText().length() != 0) {
-                    showSnackBar("transitionToExpandTopComment");
-//                    transitionToExpandTopComment();
-                }
-            });
+            binding.btnCmt.setOnClickListener(view -> transitionToExpandTopComment());
         } else {
             ColorStateList colorSurfaceVariant = ColorStateList.valueOf(ThemeUtils.getColorSurfaceVariant(this));
             binding.btnCmt.setIconTint(colorSurfaceVariant);
@@ -690,6 +733,7 @@ public class MainActivity extends SpotubeAppCompatActivity {
             @Override
             public void onTransitionStarted(MotionLayout motionLayout, int startId, int endId) {
                 setPreviousTransition(startId);
+                closeKeyboard();
                 if (startId == R.id.expand && endId == R.id.expand_top) {
                     if (binding.viewPagerOptionMusic.getVisibility() != View.VISIBLE) {
                         binding.viewPagerOptionMusic.setVisibility(View.VISIBLE);
@@ -705,13 +749,16 @@ public class MainActivity extends SpotubeAppCompatActivity {
                     handleRadiusPlayerViewExpand2ExpandTop(progress);
                     binding.viewPagerOptionMusic.setAlpha(progress);
                     setMarginTopByFactor(binding.tabOptionMusic, progress);
+                } else if (startId == R.id.expand && endId == R.id.expand_top_comment) {
+                    handleRadiusPlayerViewExpand2ExpandTop(progress);
+                    binding.commentContainer.setAlpha(progress);
                 }
             }
 
             @OptIn(markerClass = UnstableApi.class)
             @Override
             public void onTransitionCompleted(MotionLayout motionLayout, int currentId) {
-                hiddenBlurItem();
+//                hiddenBlurItem();
                 if (currentId == R.id.expand) {
                     setRadiusPlayerView(32);
                     binding.tabOptionMusic.setSelectedTabIndicator(null);
@@ -786,15 +833,23 @@ public class MainActivity extends SpotubeAppCompatActivity {
         return binding.container.getCurrentState() == R.id.fullscreen;
     }
 
+
+    public void transitionToExpand(int... delay) {
+        if (delay != null && delay.length > 0) {
+            binding.container.transitionToState(R.id.expand, delay[0]);
+        } else {
+            binding.container.transitionToState(R.id.expand);
+        }
+        closeKeyboard();
+    }
+
     public void transitionToExpandTop(int... delay) {
         if (delay != null && delay.length > 0) {
             binding.container.transitionToState(R.id.expand_top, delay[0]);
         } else {
             binding.container.transitionToState(R.id.expand_top);
         }
-        if (isKeyboardVisible(binding.getRoot())) {
-            closeKeyBoard(this);
-        }
+        closeKeyboard();
     }
 
     public void transitionToCollapse(int... delay) {
@@ -803,9 +858,7 @@ public class MainActivity extends SpotubeAppCompatActivity {
         } else {
             binding.container.transitionToState(R.id.collapse);
         }
-        if (isKeyboardVisible(binding.getRoot())) {
-            closeKeyBoard(this);
-        }
+        closeKeyboard();
     }
 
     public void transitionToFullscreen(int... delay) {
@@ -814,9 +867,7 @@ public class MainActivity extends SpotubeAppCompatActivity {
         } else {
             binding.container.transitionToState(R.id.fullscreen);
         }
-        if (isKeyboardVisible(binding.getRoot())) {
-            closeKeyBoard(this);
-        }
+        closeKeyboard();
     }
 
     private void transitionToExpandTopComment(int... delay) {
@@ -825,9 +876,7 @@ public class MainActivity extends SpotubeAppCompatActivity {
         } else {
             binding.container.transitionToState(R.id.expand_top_comment);
         }
-        if (isKeyboardVisible(binding.getRoot())) {
-            closeKeyBoard(this);
-        }
+        closeKeyboard();
     }
 
     public void showSnackBar(Object message) {
@@ -858,6 +907,8 @@ public class MainActivity extends SpotubeAppCompatActivity {
         disableOverscroll(binding.quickActionContainer);
         setRadiusPlayerView(16);
         setEnableMotionLayout();
+        disableOverscroll(binding.rcvComment);
+        disableOverscroll(binding.rcvReplyComment);
     }
 
     @Override

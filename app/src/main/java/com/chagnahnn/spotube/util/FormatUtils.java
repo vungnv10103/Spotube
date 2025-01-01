@@ -36,7 +36,7 @@ public class FormatUtils {
         return (int) (px / density);
     }
 
-    public static String compareTime(Context context, String beginTime, boolean isShortFormat) {
+    public static String compareTime(Context context, @NonNull String beginTime, boolean isShortFormat) {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
