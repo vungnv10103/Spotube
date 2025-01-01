@@ -14,6 +14,7 @@ import com.chagnahnn.spotube.R;
 import com.chagnahnn.spotube.core.SpotubeFragment;
 import com.chagnahnn.spotube.databinding.FragmentHomeBinding;
 import com.chagnahnn.spotube.ui.adapter.MultiMediaAdapter;
+import com.chagnahnn.spotube.ui.model.Comment;
 import com.chagnahnn.spotube.ui.model.MultiMedia;
 import com.chagnahnn.spotube.ui.perform.MultiMediaCallback;
 import com.chagnahnn.spotube.util.FileUtil;
@@ -73,7 +74,11 @@ public class HomeFragment extends SpotubeFragment {
 
         List<MultiMedia> multiMedias = FileUtil.parseMultiMediaList(requireContext(), R.raw.dump_data);
         multiMediaAdapter.setItemList(multiMedias);
+
+        mCommentList = FileUtil.parseCommentList(requireContext(), R.raw.dump_data);
     }
+    
+    public static List<Comment> mCommentList;
 
     @Override
     public void onDestroyView() {

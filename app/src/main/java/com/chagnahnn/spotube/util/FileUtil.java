@@ -6,6 +6,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.chagnahnn.spotube.ui.model.Comment;
 import com.chagnahnn.spotube.ui.model.MultiMedia;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -26,6 +27,30 @@ import java.util.List;
 import java.util.Map;
 
 public class FileUtil {
+
+    @NonNull
+    public static List<Comment> parseCommentList(Context context, int resourceId) {
+        List<Comment> commentList = new ArrayList<>();
+        try {
+            String json = loadJSONFromAsset(context, resourceId);
+
+            JSONObject jsonObject = new JSONObject(json).getJSONObject("comment");
+
+            Gson gson = new Gson();
+            Type type = new TypeToken<Map<String, Comment>>() {
+            }.getType();
+            Map<String, Comment> commentMap = gson.fromJson(jsonObject.toString(), type);
+
+            for (Map.Entry<String, Comment> entry : commentMap.entrySet()) {
+                Comment comment = entry.getValue();
+                comment.setId(entry.getKey());
+                commentList.add(comment);
+            }
+        } catch (Exception e) {
+            logE("", e);
+        }
+        return commentList;
+    }
     @NonNull
     public static List<MultiMedia> parseMultiMediaList(Context context, int resourceId) {
         List<MultiMedia> multimediaList = new ArrayList<>();

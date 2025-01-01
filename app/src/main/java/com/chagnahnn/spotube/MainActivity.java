@@ -36,9 +36,13 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.chagnahnn.spotube.core.MyMediaItem;
 import com.chagnahnn.spotube.core.SpotubeAppCompatActivity;
 import com.chagnahnn.spotube.databinding.ActivityMainBinding;
 import com.chagnahnn.spotube.ui.adapter.TabLayoutAdapter;
+import com.chagnahnn.spotube.ui.model.Comment;
+import com.chagnahnn.spotube.ui.model.Lyric;
+import com.chagnahnn.spotube.ui.screen.home.HomeFragment;
 import com.chagnahnn.spotube.ui.tablayout.LyricTabFragment;
 import com.chagnahnn.spotube.ui.tablayout.QueueTabFragment;
 import com.chagnahnn.spotube.util.DepthPageTransformer;
@@ -48,6 +52,9 @@ import com.chagnahnn.spotube.util.ThemeUtils;
 import com.chagnahnn.spotube.viewmodel.MainViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends SpotubeAppCompatActivity {
     private ActivityMainBinding binding;
@@ -87,17 +94,17 @@ public class MainActivity extends SpotubeAppCompatActivity {
             resetBlurViewTimeout();
             handlePrevious();
         });
-        binding.btnReplay5Blur.setOnClickListener(v -> {
+        binding.btnShuffleFullscreen.setOnClickListener(v -> {
             resetBlurViewTimeout();
-            handleSeekTo(-5);
+            handleShuffle();
         });
         binding.btnPlayPauseBlur.setOnClickListener(v -> {
             resetBlurViewTimeout();
             handlePLayPause();
         });
-        binding.btnForward10Blur.setOnClickListener(v -> {
+        binding.btnRepeatFullscreen.setOnClickListener(v -> {
             resetBlurViewTimeout();
-            handleSeekTo(10);
+            handleRepeat();
         });
         binding.btnNextBlur.setOnClickListener(v -> {
             resetBlurViewTimeout();
@@ -111,8 +118,8 @@ public class MainActivity extends SpotubeAppCompatActivity {
         binding.btnCastFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
         binding.btnMoreMediaFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
         binding.btnPlayPauseBlur.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        binding.btnReplay5Blur.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        binding.btnForward10Blur.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        binding.btnShuffleFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        binding.btnRepeatFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
         binding.btnPreviousBlur.setVisibility(isShow ? View.VISIBLE : View.GONE);
         binding.btnNextBlur.setVisibility(isShow ? View.VISIBLE : View.GONE);
         binding.tvTimeStartFullscreen.setVisibility(isShow ? View.VISIBLE : View.GONE);
@@ -177,6 +184,18 @@ public class MainActivity extends SpotubeAppCompatActivity {
             @Override
             public boolean onSingleTapConfirmed(@NonNull MotionEvent e) {
                 toggleBlurView();
+                return true;
+            }
+
+            @Override
+            public boolean onDoubleTap(@NonNull MotionEvent e) {
+                float tapX = e.getX();
+                int viewWidth = binding.playerView.getWidth();
+                if (tapX < (float) viewWidth / 2) {
+                    handleSeekTo(-10);
+                } else {
+                    handleSeekTo(10);
+                }
                 return true;
             }
         });
@@ -252,10 +271,6 @@ public class MainActivity extends SpotubeAppCompatActivity {
         binding.tvTitleMediaCollapse.setSelected(true);
         binding.tvTitleMediaExpand.setSelected(true);
         initClick(mediaController);
-
-        binding.btnLike.setText("11,7 N");
-        binding.btnDislike.setText("999");
-        binding.btnCmt.setText("125");
     }
 
     private void updatePlayPauseButton() {
@@ -308,18 +323,23 @@ public class MainActivity extends SpotubeAppCompatActivity {
     private void updateShuffleModeButton(boolean shuffleModeEnabled) {
         binding.btnShuffle.setIconResource(shuffleModeEnabled ?
                 R.drawable.ic_shuffle_fill_24dp : R.drawable.ic_shuffle_24dp);
+        binding.btnShuffleFullscreen.setIconResource(shuffleModeEnabled ?
+                R.drawable.ic_shuffle_fill_24dp : R.drawable.ic_shuffle_24dp);
     }
 
     private void updateRepeatModeButton(int repeatMode) {
         switch (repeatMode) {
             case Player.REPEAT_MODE_OFF:
                 binding.btnRepeat.setIconResource(R.drawable.ic_repeat_24dp);
+                binding.btnRepeatFullscreen.setIconResource(R.drawable.ic_repeat_24dp);
                 break;
             case Player.REPEAT_MODE_ONE:
                 binding.btnRepeat.setIconResource(R.drawable.ic_repeat_1_24dp);
+                binding.btnRepeatFullscreen.setIconResource(R.drawable.ic_repeat_1_24dp);
                 break;
             case Player.REPEAT_MODE_ALL:
                 binding.btnRepeat.setIconResource(R.drawable.ic_repeat_all_24dp);
+                binding.btnRepeatFullscreen.setIconResource(R.drawable.ic_repeat_all_24dp);
                 break;
         }
     }
@@ -329,11 +349,78 @@ public class MainActivity extends SpotubeAppCompatActivity {
         this.currentMediaItem = currentMediaItem;
     }
 
+    @NonNull
+    private List<Comment> filterComment(String mediaID) {
+        List<Comment> commentList = new ArrayList<>();
+        int size = HomeFragment.mCommentList.size();
+        for (int i = 0; i < size; i++) {
+            Comment comment = HomeFragment.mCommentList.get(i);
+            if (comment.getMultiMediaId().equals(mediaID)) {
+                commentList.add(comment);
+            }
+        }
+        return commentList;
+    }
+
+    private void handleToggleLikeDislike(MediaItem currentMediaItem, @NonNull Bundle musicBundle) {
+        long likes, dislikes;
+        boolean enableShowDislike;
+        likes = musicBundle.getLong("likesCount");
+        dislikes = musicBundle.getLong("dislikesCount");
+        enableShowDislike = musicBundle.getBoolean("enableShowDislike");
+        binding.btnLike.setText(FormatUtils.formatCount(this, likes));
+        if (enableShowDislike) {
+            binding.btnDislike.setText(FormatUtils.formatCount(this, dislikes));
+            int px = FormatUtils.dp2Px(this, 8);
+            binding.btnDislike.setPadding(px, 0, px, 0);
+        } else {
+            binding.btnDislike.setText("");
+            int px = FormatUtils.dp2Px(this, 0);
+            binding.btnDislike.setPadding(px, 0, px, 0);
+        }
+        boolean[] likeOrDislike = MyMediaItem.isLikeOrDislike(currentMediaItem);
+        binding.btnLike.setChecked(likeOrDislike[0]);
+        if (likeOrDislike[0]) {
+            binding.btnDislike.setChecked(false);
+        } else {
+            binding.btnDislike.setChecked(likeOrDislike[1]);
+        }
+    }
+
     private void handleMediaItemTransition(MediaItem currentMediaItem) {
         if (currentMediaItem == null) return;
         set(currentMediaItem);
+        Bundle musicBundle = currentMediaItem.mediaMetadata.extras;
+        if (musicBundle == null) return;
+        handleToggleLikeDislike(currentMediaItem, musicBundle);
+        boolean enableShowComment = musicBundle.getBoolean("enableShowComment");
+        if (enableShowComment) {
+            List<Comment> commentList = filterComment(currentMediaItem.mediaId);
+            if (commentList.isEmpty()) {
+                binding.btnCmt.setIconPadding(0);
+                binding.btnCmt.setText("");
+            } else {
+                binding.btnCmt.setIconPadding(FormatUtils.dp2Px(this, 6));
+                binding.btnCmt.setText(String.valueOf(commentList.size()));
+            }
+            ColorStateList colorPrimary = ColorStateList.valueOf(ThemeUtils.getColorPrimary(this));
+            binding.btnCmt.setIconTint(colorPrimary);
+            binding.btnCmt.setTextColor(colorPrimary);
+            binding.btnCmt.setOnClickListener(view -> {
+                showSnackBar("OPEN CMT");
+                if (binding.btnCmt.getText().length() != 0) {
+                    showSnackBar("transitionToExpandTopComment");
+//                    transitionToExpandTopComment();
+                }
+            });
+        } else {
+            ColorStateList colorSurfaceVariant = ColorStateList.valueOf(ThemeUtils.getColorSurfaceVariant(this));
+            binding.btnCmt.setIconTint(colorSurfaceVariant);
+            binding.btnCmt.setTextColor(colorSurfaceVariant);
+            binding.btnCmt.setOnClickListener(view -> showSnackBar(getString(R.string.comment_disable)));
+        }
 
-
+        updateTabItem();
         setEnableMotionLayout();
     }
 
@@ -387,6 +474,7 @@ public class MainActivity extends SpotubeAppCompatActivity {
                 mediaItemChanged = false;
                 binding.tvTitleMediaCollapse.setSelected(true);
                 binding.tvTitleMediaExpand.setSelected(true);
+                binding.container.setInteractionEnabled(true);
 
                 if (currentMediaItem == null) return;
                 MediaItem.LocalConfiguration localConfiguration = currentMediaItem.localConfiguration;
@@ -411,7 +499,7 @@ public class MainActivity extends SpotubeAppCompatActivity {
                     stopColorAnimator();
                     binding.tvTitleMediaCollapse.setSelected(false);
                     binding.tvTitleMediaExpand.setSelected(false);
-
+                    binding.container.setInteractionEnabled(false);
 //                    binding.artwork.setAlpha(0f);
                 }
             }
@@ -526,13 +614,33 @@ public class MainActivity extends SpotubeAppCompatActivity {
         }
     }
 
+    private void updateTabItem() {
+        TabLayout.Tab tabQueue = binding.tabOptionMusic.getTabAt(0);
+        TabLayout.Tab tabLyric = binding.tabOptionMusic.getTabAt(1);
+        TabLayout.Tab tabRelate = binding.tabOptionMusic.getTabAt(2);
+        if (tabQueue != null && tabLyric != null && tabRelate != null) {
+            tabConfigurationStrategy.onConfigureTab(tabQueue, 0);
+            tabConfigurationStrategy.onConfigureTab(tabLyric, 1);
+            tabConfigurationStrategy.onConfigureTab(tabRelate, 2);
+        }
+    }
+
     private final TabLayoutMediator.TabConfigurationStrategy tabConfigurationStrategy = (tab, position) -> {
+        MediaItem currentMediaItem = getCurrentMediaItem();
+        ArrayList<Lyric> lyrics = MyMediaItem.getLyric(currentMediaItem);
         switch (position) {
             case 0:
                 tab.setText(getString(R.string.music_next).toUpperCase());
                 break;
             case 1:
                 tab.setText(getString(R.string.music_lyrics).toUpperCase());
+                if (lyrics == null || lyrics.isEmpty()) {
+                    tab.view.setEnabled(false);
+                    tab.view.setAlpha(0.5f);
+                } else {
+                    tab.view.setEnabled(true);
+                    tab.view.setAlpha(1f);
+                }
                 break;
             case 2:
                 tab.setText(getString(R.string.music_related).toUpperCase());
@@ -582,6 +690,11 @@ public class MainActivity extends SpotubeAppCompatActivity {
             @Override
             public void onTransitionStarted(MotionLayout motionLayout, int startId, int endId) {
                 setPreviousTransition(startId);
+                if (startId == R.id.expand && endId == R.id.expand_top) {
+                    if (binding.viewPagerOptionMusic.getVisibility() != View.VISIBLE) {
+                        binding.viewPagerOptionMusic.setVisibility(View.VISIBLE);
+                    }
+                }
             }
 
             @Override
@@ -590,6 +703,8 @@ public class MainActivity extends SpotubeAppCompatActivity {
                     handleRadiusPlayerViewCollapse2Expand(progress);
                 } else if (startId == R.id.expand && endId == R.id.expand_top) {
                     handleRadiusPlayerViewExpand2ExpandTop(progress);
+                    binding.viewPagerOptionMusic.setAlpha(progress);
+                    setMarginTopByFactor(binding.tabOptionMusic, progress);
                 }
             }
 
@@ -600,12 +715,24 @@ public class MainActivity extends SpotubeAppCompatActivity {
                 if (currentId == R.id.expand) {
                     setRadiusPlayerView(32);
                     binding.tabOptionMusic.setSelectedTabIndicator(null);
+                    if (binding.viewPagerOptionMusic.getVisibility() != View.GONE) {
+                        binding.viewPagerOptionMusic.setVisibility(View.GONE);
+                    }
+                    if (binding.viewPagerOptionMusic.getAlpha() != 0f) {
+                        binding.viewPagerOptionMusic.setAlpha(0f);
+                    }
                 } else if (currentId == R.id.collapse) {
                     setRadiusPlayerView(16);
                     binding.tabOptionMusic.setSelectedTabIndicator(null);
                 } else if (currentId == R.id.expand_top) {
                     setRadiusPlayerView(16);
                     binding.tabOptionMusic.setSelectedTabIndicator(getDrawableDefaultTabLayout());
+                    if (binding.viewPagerOptionMusic.getVisibility() != View.VISIBLE) {
+                        binding.viewPagerOptionMusic.setVisibility(View.VISIBLE);
+                    }
+                    if (binding.viewPagerOptionMusic.getAlpha() != 1f) {
+                        binding.viewPagerOptionMusic.setAlpha(1f);
+                    }
                 }
 
                 if (currentId == R.id.fullscreen) {
@@ -692,6 +819,17 @@ public class MainActivity extends SpotubeAppCompatActivity {
         }
     }
 
+    private void transitionToExpandTopComment(int... delay) {
+        if (delay != null && delay.length > 0) {
+            binding.container.transitionToState(R.id.expand_top_comment, delay[0]);
+        } else {
+            binding.container.transitionToState(R.id.expand_top_comment);
+        }
+        if (isKeyboardVisible(binding.getRoot())) {
+            closeKeyBoard(this);
+        }
+    }
+
     public void showSnackBar(Object message) {
         if (isCollapse()) {
             showSnackBar(binding.getRoot(), binding.playerViewContainer, message);
@@ -730,15 +868,19 @@ public class MainActivity extends SpotubeAppCompatActivity {
         int screenHeight = getResources().getDisplayMetrics().heightPixels;
         ConstraintSet constraintSet = binding.container.getConstraintSet(R.id.expand);
         if (screenHeight <= 1800) {
+            constraintSet.setMargin(R.id.blur_view, ConstraintSet.TOP, 0);
             constraintSet.setMargin(R.id.player_view, ConstraintSet.TOP, 0);
             constraintSet.setMargin(R.id.tv_title_media_expand, ConstraintSet.TOP, 0);
             constraintSet.setMargin(R.id.quick_action_container, ConstraintSet.TOP, 0);
             constraintSet.setMargin(R.id.time_bar_expand, ConstraintSet.TOP, 0);
+            setMarginTopByFactor(binding.tabOptionMusic, 1f);
         } else {
+            constraintSet.setMargin(R.id.blur_view, ConstraintSet.TOP, FormatUtils.dp2Px(this, 34));
             constraintSet.setMargin(R.id.player_view, ConstraintSet.TOP, FormatUtils.dp2Px(this, 34));
             constraintSet.setMargin(R.id.tv_title_media_expand, ConstraintSet.TOP, FormatUtils.dp2Px(this, 28));
             constraintSet.setMargin(R.id.quick_action_container, ConstraintSet.TOP, FormatUtils.dp2Px(this, 12));
             constraintSet.setMargin(R.id.time_bar_expand, ConstraintSet.TOP, FormatUtils.dp2Px(this, 16));
+            setMarginTopByFactor(binding.tabOptionMusic, 0f);
         }
 
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {

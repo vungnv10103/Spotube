@@ -238,29 +238,29 @@
             app:rippleColor="?attr/colorControlNormal" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_previous_blur"
+            android:id="@+id/btn_shuffle_fullscreen"
             style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:visibility="gone"
-            app:icon="@drawable/ic_skip_previous_24dp"
-            app:iconSize="32dp"
+            app:icon="@drawable/ic_shuffle_24dp"
+            app:iconSize="24dp"
             app:iconTint="@color/white"
             app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause_blur"
-            app:layout_constraintEnd_toStartOf="@+id/btn_replay_5_blur"
+            app:layout_constraintEnd_toStartOf="@+id/btn_previous_blur"
             app:layout_constraintTop_toTopOf="@+id/btn_play_pause_blur"
             app:rippleColor="?attr/colorControlNormal" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_replay_5_blur"
+            android:id="@+id/btn_previous_blur"
             style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:visibility="gone"
-            app:icon="@drawable/ic_replay_5_24dp"
-            app:iconSize="32dp"
+            app:icon="@drawable/ic_previous_24dp"
+            app:iconSize="24dp"
             app:iconTint="@color/white"
             app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause_blur"
             app:layout_constraintEnd_toStartOf="@+id/btn_play_pause_blur"
@@ -273,9 +273,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="?attr/colorOnPrimary"
+            android:padding="24dp"
             android:visibility="gone"
             app:icon="@drawable/ic_play_24dp"
-            app:iconSize="32dp"
+            app:iconSize="28dp"
             app:iconTint="?attr/colorOnSecondary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -284,14 +285,14 @@
             app:rippleColor="?attr/colorControlNormal" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_forward_10_blur"
+            android:id="@+id/btn_next_blur"
             style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:visibility="gone"
-            app:icon="@drawable/ic_forward_10_24dp"
-            app:iconSize="32dp"
+            app:icon="@drawable/ic_next_24dp"
+            app:iconSize="24dp"
             app:iconTint="@color/white"
             app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause_blur"
             app:layout_constraintStart_toEndOf="@+id/btn_play_pause_blur"
@@ -299,17 +300,17 @@
             app:rippleColor="?attr/colorControlNormal" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_next_blur"
+            android:id="@+id/btn_repeat_fullscreen"
             style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:visibility="gone"
-            app:icon="@drawable/ic_skip_next_24dp"
-            app:iconSize="32dp"
+            app:icon="@drawable/ic_repeat_24dp"
+            app:iconSize="24dp"
             app:iconTint="@color/white"
             app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause_blur"
-            app:layout_constraintStart_toEndOf="@+id/btn_forward_10_blur"
+            app:layout_constraintStart_toEndOf="@+id/btn_next_blur"
             app:layout_constraintTop_toTopOf="@+id/btn_play_pause_blur"
             app:rippleColor="?attr/colorControlNormal" />
 
@@ -535,6 +536,7 @@
         android:contentDescription="@string/shuffle"
         app:icon="@drawable/ic_shuffle_24dp"
         app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause_expand"
+        app:layout_constraintEnd_toStartOf="@+id/btn_previous"
         app:layout_constraintStart_toStartOf="@+id/content_media_container"
         app:layout_constraintTop_toTopOf="@+id/btn_play_pause_expand" />
 
@@ -555,11 +557,11 @@
         style="@style/Widget.App.Button.IconButton.Filled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="10dp"
         android:contentDescription="@string/play_pause"
-        android:padding="16dp"
+        android:padding="24dp"
         app:icon="@drawable/ic_play_24dp"
-        app:iconSize="40dp"
+        app:iconSize="28dp"
         app:layout_constraintEnd_toEndOf="@+id/content_media_container"
         app:layout_constraintStart_toStartOf="@+id/content_media_container"
         app:layout_constraintTop_toBottomOf="@+id/time_bar_expand" />
@@ -586,6 +588,7 @@
         app:icon="@drawable/ic_repeat_24dp"
         app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause_expand"
         app:layout_constraintEnd_toEndOf="@+id/content_media_container"
+        app:layout_constraintStart_toEndOf="@+id/btn_next"
         app:layout_constraintTop_toTopOf="@+id/btn_play_pause_expand" />
 
     <com.google.android.material.card.MaterialCardView
@@ -593,7 +596,7 @@
         style="@style/Widget.App.CardView.TabLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="4dp"
         app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/content_media_container"
@@ -609,6 +612,7 @@
                 android:id="@+id/tab_option_music"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/tab_layout"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -622,6 +626,8 @@
                 android:id="@+id/view_pager_option_music"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:alpha="0"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/tab_option_music"
                 app:layout_constraintStart_toStartOf="@+id/tab_option_music"
@@ -682,7 +688,6 @@
         android:alpha="0"
         android:contentDescription="@string/play_pause_collapse"
         app:icon="@drawable/ic_play_24dp"
-        app:iconSize="28dp"
         app:layout_constraintBottom_toBottomOf="@+id/player_view_container"
         app:layout_constraintEnd_toEndOf="@+id/player_view_container"
         app:layout_constraintTop_toTopOf="@+id/player_view_container" />
