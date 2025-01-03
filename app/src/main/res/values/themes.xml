@@ -50,13 +50,18 @@
         <item name="iconTint">?attr/colorSurface</item>
     </style>
 
+    <style name="Widget.App.Button.IconButton" parent="Widget.Material3.Button.IconButton">
+        <!--unnecessary configuration -->
+    </style>
+
     <style name="Widget.App.Button.Filter" parent="Widget.Material3.Button">
         <item name="android:insetTop">6dp</item>
         <item name="android:insetBottom">6dp</item>
         <item name="android:paddingStart">4dp</item>
         <item name="android:paddingEnd">4dp</item>
-        <item name="android:backgroundTint">?attr/colorSurfaceContainer</item>
+        <item name="android:backgroundTint">?attr/colorSurfaceContainerHighest</item>
         <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="rippleColor">?attr/colorSurfaceContainer</item>
     </style>
 
     <style name="Widget.App.Button.Filter.Selected" parent="Widget.Material3.Button">
@@ -65,7 +70,7 @@
         <item name="android:paddingStart">4dp</item>
         <item name="android:paddingEnd">4dp</item>
         <item name="android:backgroundTint">?attr/colorPrimary</item>
-        <item name="android:textColor">?attr/colorSurfaceContainer</item>
+        <item name="android:textColor">?attr/colorSurfaceContainerHighest</item>
     </style>
 
     <style name="BottomNavTextSmall">

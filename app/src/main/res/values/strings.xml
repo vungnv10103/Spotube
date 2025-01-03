@@ -127,6 +127,7 @@
     <string name="next" translatable="false">Next</string>
     <string name="repeat" translatable="false">Repeat</string>
     <string name="tab_layout" translatable="false">Tab Layout</string>
+    <string name="img_user" translatable="false">Image user</string>
 
 
     <string name="des_long_second_time">second ago</string>

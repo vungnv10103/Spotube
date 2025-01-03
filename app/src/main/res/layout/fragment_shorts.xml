@@ -44,7 +44,7 @@
                 android:id="@+id/view4"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:background="@color/material_dynamic_neutral50"
+                android:background="@color/mine_shaft"
                 app:layout_constraintTop_toBottomOf="@id/view3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

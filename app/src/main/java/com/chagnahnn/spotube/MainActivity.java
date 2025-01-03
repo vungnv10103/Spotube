@@ -1,7 +1,5 @@
 package com.chagnahnn.spotube;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
@@ -16,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RadioButton;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
 import androidx.constraintlayout.motion.widget.MotionLayout;
@@ -45,7 +44,6 @@ import com.chagnahnn.spotube.ui.adapter.CommentAdapter;
 import com.chagnahnn.spotube.ui.adapter.TabLayoutAdapter;
 import com.chagnahnn.spotube.ui.model.Comment;
 import com.chagnahnn.spotube.ui.model.Lyric;
-import com.chagnahnn.spotube.ui.screen.home.HomeFragment;
 import com.chagnahnn.spotube.ui.tablayout.LyricTabFragment;
 import com.chagnahnn.spotube.ui.tablayout.QueueTabFragment;
 import com.chagnahnn.spotube.util.DepthPageTransformer;
@@ -61,10 +59,40 @@ import java.util.List;
 
 public class MainActivity extends SpotubeAppCompatActivity {
     private ActivityMainBinding binding;
+    private NavController navController;
     private MainViewModel mainViewModel;
     private MediaItem currentMediaItem;
     private boolean mediaItemChanged = false;
     private boolean firstLoad = true;
+
+    private CommentAdapter commentAdapter;
+    private boolean isReplyContainerShow = false;
+
+    private final OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            if (isExpandTop()) {
+                transitionToExpand();
+            } else if (isExpandTopComment()) {
+                if (isReplyContainerShow) {
+                    isReplyContainerShow = false;
+                    animateLayout(binding.replyCommentContainer, binding.mainCommentContainer, "right", 350);
+                } else {
+                    transitionToExpand();
+                }
+            } else if (isExpand()) {
+                transitionToCollapse();
+            } else if (isCollapse()) {
+                if (navController.getCurrentDestination() != null &&
+                        navController.getCurrentDestination().getId() != R.id.navigation_home &&
+                        navController.popBackStack()) {
+                    navController.navigateUp();
+                } else {
+                    moveTaskToBack(true);
+                }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +106,6 @@ public class MainActivity extends SpotubeAppCompatActivity {
         initMediaController();
         loadData();
     }
-
-
-    private CommentAdapter commentAdapter;
 
     private void initClick(MediaController mediaController) {
 //        setupButtonBlurListeners();
@@ -110,9 +135,11 @@ public class MainActivity extends SpotubeAppCompatActivity {
         String wordToStyle = getString(R.string.term_title);
         String fullText = String.format(textTemplate, wordToStyle);
 
-        commentAdapter = new CommentAdapter(this, getSpannableString(fullText, wordToStyle));
-        disableOverscroll(binding.rcvComment);
+        commentAdapter = new CommentAdapter(this, false, getSpannableString(fullText, wordToStyle));
         binding.rcvComment.setAdapter(commentAdapter);
+
+        replyCommentAdapter = new CommentAdapter(this, true, null);
+        binding.rcvReplyComment.setAdapter(replyCommentAdapter);
 
         binding.btnBackToMainCmt.setOnClickListener(view -> hideReplyCmt());
         binding.btnCloseCmt.setOnClickListener(view -> transitionToExpand());
@@ -142,6 +169,7 @@ public class MainActivity extends SpotubeAppCompatActivity {
 
             }
         });
+        binding.inputReplyCmtContainer.edtCmt.setHint(R.string.reply);
         binding.inputReplyCmtContainer.edtCmt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
@@ -172,7 +200,22 @@ public class MainActivity extends SpotubeAppCompatActivity {
         binding.inputReplyCmtContainer.btnSendCmt.setOnClickListener(view -> showToast("Replay:: " + binding.inputReplyCmtContainer.edtCmt.getText().toString().trim()));
     }
 
-    public void showReplyCmt(boolean isFocusEditText) {
+    private CommentAdapter replyCommentAdapter;
+
+    public void showReplyCmt(Comment comment, boolean isFocusEditText) {
+        List<Comment> replyCommentList = new ArrayList<>();
+        replyCommentList.add(comment);
+        for (int i = 1; i <= 5; i++) {
+            String content = "This is reply comment " + i;
+            Comment commentReply = new Comment(String.valueOf(i), "userId" + i + 10,
+                    "-OAC73ZH71ILOTa7qZAK", content, 0, 0, 0,
+                    false, false, false, false,
+                    "", "", false);
+
+            replyCommentList.add(commentReply);
+        }
+        replyCommentAdapter.setItemList(replyCommentList);
+        isReplyContainerShow = true;
         binding.btnBackToMainCmt.setVisibility(View.VISIBLE);
         binding.tvHeaderCmt.setText(getString(R.string.reply_title));
         animateLayout(binding.mainCommentContainer, binding.replyCommentContainer, "left", 350);
@@ -188,6 +231,7 @@ public class MainActivity extends SpotubeAppCompatActivity {
     }
 
     private void hideReplyCmt() {
+        isReplyContainerShow = false;
         binding.btnBackToMainCmt.setVisibility(View.GONE);
         binding.tvHeaderCmt.setText(getString(R.string.comment));
         animateLayout(binding.replyCommentContainer, binding.mainCommentContainer, "right", 350);
@@ -199,55 +243,6 @@ public class MainActivity extends SpotubeAppCompatActivity {
             closeKeyBoard(this);
         }
     }
-
-
-    /**
-     * Animates the transition between two layouts with a sliding effect.
-     *
-     * @param layoutToHide   The layout currently visible that will be hidden.
-     * @param layoutToShow   The layout currently hidden that will be shown.
-     * @param slideDirection The direction of the slide animation. Can be "left" or "right".
-     * @param duration       The duration of the animation in milliseconds.
-     */
-    @SuppressWarnings("SameParameterValue")
-    private void animateLayout(@NonNull View layoutToHide, View layoutToShow,
-                               @NonNull String slideDirection, long duration) {
-        int width = layoutToHide.getWidth();
-
-        // Determine animation direction
-        float hideStartX = 0;
-        float hideEndX = slideDirection.equals("left") ? -width : width;
-
-        float showStartX = slideDirection.equals("left") ? width : -width;
-        float showEndX = 0;
-
-        // Slide out animation for the layout to hide
-        ObjectAnimator slideOut = ObjectAnimator.ofFloat(layoutToHide, "translationX", hideStartX, hideEndX);
-        slideOut.setDuration(duration);
-
-        // Slide in animation for the layout to show
-        ObjectAnimator slideIn = ObjectAnimator.ofFloat(layoutToShow, "translationX", showStartX, showEndX);
-        slideIn.setDuration(duration);
-
-        // AnimatorSet to play animations together
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.playTogether(slideOut, slideIn);
-
-        animatorSet.addListener(new android.animation.AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(android.animation.Animator animation) {
-                layoutToShow.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(android.animation.Animator animation) {
-                layoutToHide.setVisibility(View.GONE);
-            }
-        });
-
-        animatorSet.start();
-    }
-
 
     private void initMediaController() {
         mainViewModel.initMediaController(this, playerListener);
@@ -323,7 +318,6 @@ public class MainActivity extends SpotubeAppCompatActivity {
         if (colorDefault != color) {
             ConstraintSet constraintSet = binding.container.getConstraintSet(R.id.expand);
             startAnimationColor(constraintSet, colorDefault, color);
-//            startColor(constraintSet, color);
             int colorOption = getBackgroundColorOption();
             binding.btnLike.setBackgroundColor(colorOption);
             binding.btnDislike.setBackgroundColor(colorOption);
@@ -388,19 +382,6 @@ public class MainActivity extends SpotubeAppCompatActivity {
         this.currentMediaItem = currentMediaItem;
     }
 
-    @NonNull
-    private List<Comment> filterComment(String mediaID) {
-        List<Comment> commentList = new ArrayList<>();
-        int size = HomeFragment.mCommentList.size();
-        for (int i = 0; i < size; i++) {
-            Comment comment = HomeFragment.mCommentList.get(i);
-            if (comment.getMultiMediaId().equals(mediaID)) {
-                commentList.add(comment);
-            }
-        }
-        return commentList;
-    }
-
     private void handleToggleLikeDislike(MediaItem currentMediaItem, @NonNull Bundle musicBundle) {
         long likes, dislikes;
         boolean enableShowDislike;
@@ -430,9 +411,9 @@ public class MainActivity extends SpotubeAppCompatActivity {
         binding.inputCmtContainer.edtCmt.setText("");
         binding.inputReplyCmtContainer.edtCmt.setText("");
     }
-
     private void handleMediaItemTransition(MediaItem currentMediaItem) {
         clearEdtCmt();
+//        hideReplayCommentContainer();
         if (isExpandTopComment()) {
             transitionToExpand();
         }
@@ -461,6 +442,8 @@ public class MainActivity extends SpotubeAppCompatActivity {
             binding.btnCmt.setIconTint(colorSurfaceVariant);
             binding.btnCmt.setTextColor(colorSurfaceVariant);
             binding.btnCmt.setOnClickListener(view -> showSnackBar(getString(R.string.comment_disable)));
+            binding.btnCmt.setIconPadding(0);
+            binding.btnCmt.setText("");
         }
 
         updateTabItem();
@@ -768,6 +751,9 @@ public class MainActivity extends SpotubeAppCompatActivity {
                     if (binding.viewPagerOptionMusic.getAlpha() != 0f) {
                         binding.viewPagerOptionMusic.setAlpha(0f);
                     }
+                    if (isReplyContainerShow) {
+                        hideReplyCmt();
+                    }
                 } else if (currentId == R.id.collapse) {
                     setRadiusPlayerView(16);
                     binding.tabOptionMusic.setSelectedTabIndicator(null);
@@ -787,13 +773,11 @@ public class MainActivity extends SpotubeAppCompatActivity {
                     hideSystemUI();
                     binding.playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
                     binding.playerView.setArtworkDisplayMode(PlayerView.ARTWORK_DISPLAY_MODE_FILL);
-//                    binding.playerView.setUseController(true);
                     binding.btnFullScreen.setIcon(getDrawable(MainActivity.this, R.drawable.ic_fullscreen_exit_24dp));
                 } else {
                     showSystemUI();
                     binding.playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
                     binding.playerView.setArtworkDisplayMode(PlayerView.ARTWORK_DISPLAY_MODE_FIT);
-//                    binding.playerView.setUseController(false);
                     binding.btnFullScreen.setIcon(getDrawable(MainActivity.this, R.drawable.ic_fullscreen_on_24dp));
                 }
             }
@@ -892,9 +876,10 @@ public class MainActivity extends SpotubeAppCompatActivity {
                 R.id.navigation_home, R.id.navigation_shorts, R.id.navigation_explore,
                 R.id.navigation_library)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+        getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     private void setEnableMotionLayout() {
@@ -959,13 +944,5 @@ public class MainActivity extends SpotubeAppCompatActivity {
             setFullscreenButtonState(false);
             binding.container.transitionToState(getPreviousTransition());
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-
-        binding = null;
     }
 }

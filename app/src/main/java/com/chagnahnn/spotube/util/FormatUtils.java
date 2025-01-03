@@ -20,6 +20,19 @@ import java.util.TimeZone;
 
 @SuppressWarnings({"unused"})
 public class FormatUtils {
+
+    @Nullable
+    @SuppressLint("SimpleDateFormat")
+    public static Date parseISO8601Date(String dateStr) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        try {
+            return sdf.parse(dateStr);
+        } catch (ParseException e) {
+            LogUtils.logE("compareTime: " + e.getMessage(), e);
+            return null;
+        }
+    }
     public static int px2Dp(@NonNull Context context, float px) {
         return Math.round(px / context.getResources().getDisplayMetrics().density);
     }

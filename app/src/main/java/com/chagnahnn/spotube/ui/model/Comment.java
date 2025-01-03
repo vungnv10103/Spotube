@@ -8,12 +8,36 @@ public class Comment {
     private long likeCount;
     private long dislikeCount;
     private long replyCount;
+    public boolean isShowDisLikeCount;
     private boolean isPinned;
-    private boolean isEdit;
+    private boolean isParentCmt;
     private boolean isParentLike;
 
     private String createdAt;
     private String updatedAt;
+
+    private boolean isExpanded;
+
+    public Comment() {
+
+    }
+
+    public Comment(String id, String userId, String multiMediaId, String content, long likeCount, long dislikeCount, long replyCount, boolean isShowDisLikeCount, boolean isPinned, boolean isParentCmt, boolean isParentLike, String createdAt, String updatedAt, boolean isExpanded) {
+        this.id = id;
+        this.userId = userId;
+        this.multiMediaId = multiMediaId;
+        this.content = content;
+        this.likeCount = likeCount;
+        this.dislikeCount = dislikeCount;
+        this.replyCount = replyCount;
+        this.isShowDisLikeCount = isShowDisLikeCount;
+        this.isPinned = isPinned;
+        this.isParentCmt = isParentCmt;
+        this.isParentLike = isParentLike;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.isExpanded = isExpanded;
+    }
 
     public String getId() {
         return id;
@@ -71,20 +95,20 @@ public class Comment {
         this.replyCount = replyCount;
     }
 
+    public boolean isShowDisLikeCount() {
+        return isShowDisLikeCount;
+    }
+
+    public void setShowDisLikeCount(boolean showDisLikeCount) {
+        isShowDisLikeCount = showDisLikeCount;
+    }
+
     public boolean isPinned() {
         return isPinned;
     }
 
     public void setPinned(boolean pinned) {
         isPinned = pinned;
-    }
-
-    public boolean isEdit() {
-        return isEdit;
-    }
-
-    public void setEdit(boolean edit) {
-        isEdit = edit;
     }
 
     public boolean isParentLike() {
@@ -109,5 +133,21 @@ public class Comment {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public boolean isParentCmt() {
+        return isParentCmt;
+    }
+
+    public void setParentCmt(boolean parentCmt) {
+        isParentCmt = parentCmt;
+    }
+
+    public boolean isExpanded() {
+        return isExpanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        isExpanded = expanded;
     }
 }

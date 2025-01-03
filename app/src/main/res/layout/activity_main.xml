@@ -56,7 +56,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_back_to_collapse"
-        style="@style/Widget.Material3.Button.IconButton"
+        style="?attr/materialIconButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
@@ -67,7 +67,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_playback_speed"
-        style="@style/Widget.Material3.Button.IconButton"
+        style="?attr/materialIconButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/custom_playback_speed"
@@ -126,7 +126,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_more_media_expand"
-        style="@style/Widget.Material3.Button.IconButton"
+        style="?attr/materialIconButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
@@ -185,7 +185,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_hide_fullscreen"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="?attr/materialIconButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -199,7 +199,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_share_media_fullscreen"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="?attr/materialIconButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -225,7 +225,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_more_media_fullscreen"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="?attr/materialIconButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -239,10 +239,11 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_shuffle_fullscreen"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="?attr/materialIconButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:padding="16dp"
             android:visibility="gone"
             app:icon="@drawable/ic_shuffle_24dp"
             app:iconSize="24dp"
@@ -254,10 +255,11 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_previous_blur"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="?attr/materialIconButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:padding="16dp"
             android:visibility="gone"
             app:icon="@drawable/ic_previous_24dp"
             app:iconSize="24dp"
@@ -269,7 +271,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_play_pause_blur"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="?attr/materialIconButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="?attr/colorOnPrimary"
@@ -286,10 +288,11 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_next_blur"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="?attr/materialIconButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:padding="16dp"
             android:visibility="gone"
             app:icon="@drawable/ic_next_24dp"
             app:iconSize="24dp"
@@ -301,10 +304,11 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_repeat_fullscreen"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="?attr/materialIconButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:padding="16dp"
             android:visibility="gone"
             app:icon="@drawable/ic_repeat_24dp"
             app:iconSize="24dp"
@@ -356,7 +360,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_full_screen"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="?attr/materialIconButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
@@ -407,7 +411,6 @@
         android:layout_marginEnd="30dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="@string/app_name"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -529,11 +532,12 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_shuffle"
-        style="@style/Widget.Material3.Button.IconButton"
+        style="?attr/materialIconButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:contentDescription="@string/shuffle"
+        android:padding="16dp"
         app:icon="@drawable/ic_shuffle_24dp"
         app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause_expand"
         app:layout_constraintEnd_toStartOf="@+id/btn_previous"
@@ -542,10 +546,11 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_previous"
-        style="@style/Widget.Material3.Button.IconButton"
+        style="?attr/materialIconButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/previous"
+        android:padding="16dp"
         app:icon="@drawable/ic_previous_24dp"
         app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause_expand"
         app:layout_constraintEnd_toStartOf="@+id/btn_play_pause_expand"
@@ -568,10 +573,11 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_next"
-        style="@style/Widget.Material3.Button.IconButton"
+        style="?attr/materialIconButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/next"
+        android:padding="16dp"
         app:icon="@drawable/ic_next_24dp"
         app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause_expand"
         app:layout_constraintEnd_toStartOf="@+id/btn_repeat"
@@ -580,11 +586,12 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_repeat"
-        style="@style/Widget.Material3.Button.IconButton"
+        style="?attr/materialIconButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
         android:contentDescription="@string/repeat"
+        android:padding="16dp"
         app:icon="@drawable/ic_repeat_24dp"
         app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause_expand"
         app:layout_constraintEnd_toEndOf="@+id/content_media_container"
@@ -665,7 +672,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_back_to_main_cmt"
-                style="@style/Widget.Material3.Button.IconButton"
+                style="?attr/materialIconButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
@@ -688,14 +695,13 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_close_cmt"
-                style="@style/Widget.Material3.Button.IconButton"
+                style="?attr/materialIconButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="6dp"
-                android:layout_marginVertical="12dp"
-                android:scaleX="1.4"
-                android:scaleY="1.4"
+                android:layout_marginVertical="8dp"
                 app:icon="@drawable/ic_close_24dp"
+                app:iconSize="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -750,6 +756,7 @@
                     android:clipToPadding="false"
                     android:nestedScrollingEnabled="false"
                     android:orientation="vertical"
+                    android:paddingBottom="80dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toTopOf="@+id/input_cmt_container"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -785,6 +792,7 @@
                     android:clipToPadding="false"
                     android:nestedScrollingEnabled="false"
                     android:orientation="vertical"
+                    android:paddingBottom="80dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toTopOf="@+id/input_reply_cmt_container"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -834,7 +842,6 @@
         android:alpha="0"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="@string/app_name"
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/btn_cast_collapse"
         app:layout_constraintStart_toStartOf="@+id/tv_title_media_collapse"
@@ -852,7 +859,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_play_pause_collapse"
-        style="@style/Widget.Material3.Button.IconButton"
+        style="?attr/materialIconButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:alpha="0"

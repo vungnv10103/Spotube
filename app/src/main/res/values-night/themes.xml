@@ -14,6 +14,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <!-- Customize your theme here. -->
         <item name="materialCardViewStyle">@style/Widget.App.CardView</item>
+        <item name="materialIconButtonStyle">@style/Widget.App.Button.IconButton</item>
     </style>
 
 
@@ -26,6 +27,10 @@
         <item name="iconTint">?attr/colorSurface</item>
     </style>
 
+    <style name="Widget.App.Button.IconButton" parent="Widget.Material3.Button.IconButton">
+        <item name="rippleColor">?attr/colorSurfaceContainerHigh</item>
+    </style>
+
     <style name="Widget.App.Button.Filter" parent="Widget.Material3.Button">
         <item name="android:insetTop">6dp</item>
         <item name="android:insetBottom">6dp</item>
@@ -33,6 +38,7 @@
         <item name="android:paddingEnd">4dp</item>
         <item name="android:backgroundTint">?attr/colorSurfaceContainerHighest</item>
         <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="rippleColor">?attr/colorSurfaceContainerHigh</item>
     </style>
 
     <style name="Widget.App.Button.Filter.Selected" parent="Widget.Material3.Button">
@@ -42,6 +48,7 @@
         <item name="android:paddingEnd">4dp</item>
         <item name="android:backgroundTint">?attr/colorPrimary</item>
         <item name="android:textColor">?attr/colorSurfaceContainerHighest</item>
+        <item name="rippleColor">?attr/colorOnSurfaceVariant</item>
     </style>
 
     <!--    end common   -->
